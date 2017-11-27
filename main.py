@@ -28,7 +28,8 @@ def process_submission():
             error += 1
     if password_match(password, password2) != True:
         validate_error = "Passwords do not match"
-        error += 1
+        error +=1
+
     if error > 0:
         return render_template("submit.html", title = "User Signup",
                         username = username,
@@ -38,22 +39,25 @@ def process_submission():
                         invalid_email = email_error,
                         verify_error = validate_error
                         )
-    def validate(text):
+    if error == 0:
+        return redirect("/submission-success?username={0}".format(username))
 
-        if not text: #user submits a blank rotation field
-            error = "This section cannot be left blank."
-            return error
-        if contains_spaces(text):
-            error = "Username cannot contain spaces."
-            return error
-        if len(text) <= 3:
-            error = "Please enter a value greater than 3 characters."
-            return error
-        if len(text) > 20:
-            error = "Please enter a value less than 20 characters."
-            return error
+def validate(text):
 
-        return text
+    if not text: #user submits a blank rotation field
+        error = "This section cannot be left blank."
+        return error
+    if contains_spaces(text):
+        error = "Username cannot contain spaces."
+        return error
+    if len(text) <= 3:
+        error = "Please enter a value greater than 3 characters."
+        return error
+    if len(text) > 20:
+        error = "Please enter a value less than 20 characters."
+        return error
+
+    return text
 
 def validate_address(email):
 

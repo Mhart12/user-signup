@@ -8,8 +8,8 @@ app.config['DEBUG'] = True
 def goats():
     username = request.form["username"]
     password = request.form["password"]
-    password2 = request.form ["verify"]
-    email = request.form ["email"]
+    password2 = request.form["verify"]
+    email = request.form["email"]
     error = 0
     username_error = ''
     password_error = ''
@@ -28,7 +28,17 @@ def goats():
             error += 1
     if password_match(password, password2) != True:
         validate_error = "Passwords do not match"
-        error += 1
+        error +=1
+
+    if error > 0:
+        return render_template("submit.html", title = "User Signup",
+                        username = username,
+                        email = email,
+                        invalid_username = username_error,
+                        invalid_password = password_error,
+                        invalid_email = email_error,
+                        verify_error = validate_error
+                        )
     if error == 0:
         return redirect("/submission-success?username={0}".format(username))
 
@@ -46,6 +56,7 @@ def validate(text):
     if len(text) > 20:
         error = "Please enter a value less than 20 characters."
         return error
+
     return text
 
 def validate_address(email):
@@ -66,11 +77,11 @@ def validate_address(email):
             at_symbol += 1
         if character == ".":
             period += 1
-    if at_symbol > 1 or at_symbol ==0:
+    if at_symbol > 1 or at_symbol == 0:
         return "Invalid email address"
-    if period > 1 or period1 == 0:
+    if period > 1 or periodl == 0:
         return "Invalid email address"
-    return email_error
+    return email
 
 def password_match(password, verify):
     if password != verify:
@@ -81,14 +92,16 @@ def password_match(password, verify):
 def contains_spaces(text):
 
     for character in text:
-            if character == " ":
-                return True
+        if character == " ":
+            return True
+
     return False
 
-@app.route("/submission-success"):
+@app.route("/submission-success")
 def valid_user():
     username = request.args.get("username")
     return "<h1>You submitted {0}. You're a real boy!</h1>".format(username)
+
 @app.route("/")
 def index():
     return render_template('submit.html', title="User Signup")
